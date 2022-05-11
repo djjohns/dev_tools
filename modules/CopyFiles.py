@@ -17,6 +17,7 @@ class CopyFiles():
                 playsound('../audio/confirmation.wav')
                 time.sleep(0.1)
 
+    # TODO: implement if file count/filesize threshold is met.
     def _loading_sound(self):
         threading.Thread(
             target=playsound,
@@ -24,6 +25,7 @@ class CopyFiles():
             daemon=True
         ).start()
 
+    # TODO: get filesize and file count before copying to pass to progressbar
     def copy(self):
         for filename in os.listdir(self.source_dir):
             if filename.endswith(self.file_type.lower()) or filename.endswith(self.file_type.upper()):
@@ -31,6 +33,7 @@ class CopyFiles():
                 shutil.copy(os.path.join(self.source_dir, filename), self.dest_dir)
         self._copy_complete()
 
+    # TODO: get filesize and file count before copying to pass to progressbar
     def copy_recursively(self):
         for root, dirs, files in os.walk(self.source_dir):
             for filename in files:
