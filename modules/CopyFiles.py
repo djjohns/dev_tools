@@ -4,6 +4,7 @@ import time
 import threading
 from playsound import playsound
 from dataclasses import dataclass
+from tqdm import tqdm
 
 
 @dataclass
@@ -25,22 +26,36 @@ class CopyFiles():
             daemon=True
         ).start()
 
-    # TODO: get filesize and file count before copying to pass to progressbar
-    def copy(self):
-        for filename in os.listdir(self.source_dir):
-            if filename.endswith(self.file_type.lower()) or filename.endswith(self.file_type.upper()):
-                print(f"Copying {filename} from {self.source_dir} to {self.dest_dir}.")
-                shutil.copy(os.path.join(self.source_dir, filename), self.dest_dir)
-        self._copy_complete()
 
-    # TODO: get filesize and file count before copying to pass to progressbar
+    def copy(self):
+        for filename in tqdm(
+            # Use tqdm for progress bar.
+            os.listdir(self.source_dir),  # Iterable, 
+            unit =f" {self.file_type} files",  # Set our unit of measure.
+            desc = f"Copying files to {self.dest_dir}"  # Set our description.
+        ):
+            # If filename ends with specified file type.
+            if filename.endswith(self.file_type.lower()) or filename.endswith(self.file_type.upper()):
+                # Copy files from source to destination.
+                shutil.copy(os.path.join(self.source_dir, filename), self.dest_dir)
+                time.sleep(0.1)  # Sleep to so progress in progress bar.
+        self._copy_complete()  # Play our alert sound.
+
+
     def copy_recursively(self):
         for root, dirs, files in os.walk(self.source_dir):
-            for filename in files:
+            for filename in tqdm(
+                # Use tqdm for progressbar.
+                files,  # Iterable of files.
+                unit =f" {self.file_type} files",  # Set our unit of measure.
+                desc = f"Copying files to {self.dest_dir}."  # Set our description. 
+            ):
+                # If filename ends with specified file_type.
                 if filename.endswith(self.file_type.lower()) or filename.endswith(self.file_type.upper()):
-                    print(f"Copying {filename} from {root} to {self.dest_dir}.")
+                    # Copy files from source to destination.
                     shutil.copy(os.path.join(root, filename), self.dest_dir)
-        self._copy_complete()
+                    time.sleep(0.1)  # Sleep to show progress in progress bar.
+        self._copy_complete()  # Play our alert sound.
 
 
 
@@ -50,5 +65,5 @@ if __name__ == '__main__':
         "C:/dev/file_dump", # destination directory
         ".csv", # file type
     )
-    copy_csv_files.copy()
+    # copy_csv_files.copy()
     copy_csv_files.copy_recursively()
