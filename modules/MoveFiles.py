@@ -8,6 +8,13 @@ from tqdm import tqdm
 
 @dataclass
 class MoveFiles():
+    '''
+    ### Moves files from a source path to a destination path.
+    #### Args:
+    source_dir (str): Path to source dir of files you want to move.
+    dest_dit (str): Path to destination dir of where you want to move the files to.
+    file_type (str): File extention of the files you want to move.
+    '''
     source_dir: str
     dest_dir: str
     file_type: str
@@ -27,6 +34,9 @@ class MoveFiles():
 
 
     def move(self):
+        '''
+        Moves files from source to destination.
+        '''
         for filename in tqdm(
             # Use tqdm for progress bar.
             os.listdir(self.source_dir),  # Iterable, 
@@ -59,10 +69,10 @@ class MoveFiles():
 
 
 if __name__ == '__main__':
-    move_csv_files = MoveFiles(
-        "C:\\Users\\david\\Desktop\\", # source directory
-        "C:\\Users\\david\\Desktop\\f3d_files", # destination directory
-        ".f3d", # file type
-    )
-    move_csv_files.move()
-    # move_csv_files.move_recursively()
+    move_stl_files = MoveFiles(
+    "C:/Users/djjoh/Downloads/",  # Source
+    "C:/Users/djjoh/OneDrive/stl_files/",  # Destination
+    ".stl"  # File type
+)
+    move_stl_files.move()
+    # move_stl_files.move_recursively()
